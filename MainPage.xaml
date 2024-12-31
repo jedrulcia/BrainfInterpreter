@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BrainfInterpreter"
+             x:Class="BrainfInterpreter.MainPage"
+             xmlns:controls="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
+             Title="Brainfuck Interpreter"
+             BackgroundColor="Black">
+
+    <ContentPage.Resources>
+        <local:PointerHighlightConverter x:Key="PointerHighlightConverter" />
+    </ContentPage.Resources>
+
+    <Grid Padding="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Editor do wprowadzania kodu Brainfuck -->
+        <Editor Grid.Row="0" HeightRequest="100" 
+                Text="{Binding Code}" 
+                AutoSize="TextChanges" 
+                FontSize="14" 
+                BackgroundColor="DarkGray" 
+                TextColor="White" 
+                HorizontalTextAlignment="Start" />
+
+        <!-- Przycisk uruchamiający kod -->
+        <Button Grid.Row="1" HeightRequest="40" 
+                Text="Run Code" 
+                Command="{Binding ExecuteCodeCommand}" 
+                FontSize="14"
+                BackgroundColor="Blue"
+                TextColor="White" />
+
+        <!-- Etykieta wyświetlająca wynik wykonania kodu -->
+        <Label Grid.Row="2" HeightRequest="40"
+               Text="{Binding OutputText}"
+               TextColor="White"
+               BackgroundColor="DarkGray"
+               FontSize="14"
+               VerticalTextAlignment="Center" />
+
+        <!-- ScrollView z pamięcią -->
+        <ScrollView Grid.Row="3" HorizontalScrollBarVisibility="Default" VerticalScrollBarVisibility="Default">
+            <CollectionView ItemsSource="{Binding Memory}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="32" Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="2" Margin="1" BorderColor="Black"
+                               BackgroundColor="{Binding ., Converter={StaticResource PointerHighlightConverter}, ConverterParameter={Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CurrentPointer}}">
+                            <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontSize="12" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+    </Grid>
+</ContentPage>
